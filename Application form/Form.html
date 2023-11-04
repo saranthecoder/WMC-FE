@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Form</title>
     <link rel="stylesheet" href="./Form.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Application Form</h1>
-        <form action="">
+        <form action="/posting" method="post" enctype="multipart/form-data">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" placeholder="Enter your full name" required>
             <label for="roll_number">Roll Number:</label>
@@ -68,10 +70,71 @@
                 <input type="checkbox" id="database" name="database">
                 Database (sql/nosql)
             </label><br>
-            <label for="resume">Upload Resume:</label>
-            <input type="file" id="resume" required>
+            <!-- <label for="resume">Upload Resume:</label>
+            <input type="file" id="resume" required> -->
             <input type="submit" value="Submit">
         </form>
     </div>
 </body>
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Fetch data from form fields
+        const name = document.getElementById("name").value;
+        const rollNumber = document.getElementById("roll_number").value;
+        const email = document.getElementById("email").value;
+        const phoneNumber = document.getElementById("phone_number").value;
+        const year = document.getElementById("year").value;
+        const department = document.getElementById("department").value;
+        const section = document.getElementById("section").value;
+
+        // Create an array to store the selected roles
+        const roles = [];
+        if (document.getElementById("ui/ux").checked) {
+            roles.push("UI/UX Design")
+        }
+        if (document.getElementById("frontend").checked) {
+            roles.push("Frontend")
+        }
+        if (document.getElementById("backend").checked) {
+            roles.push("Backend (nodejs)")
+        }
+        if (document.getElementById("database").checked) {
+            roles.push("Database (sql/nosql)")
+        }
+
+        // Fetch the uploaded resume file (you may need to handle file upload differently)
+        // const resume = document.getElementById("resume").files[0];
+
+        // Create an object to represent the form data
+        const formData = {
+            name,
+            rollNumber,
+            email,
+            phoneNumber,
+            year,
+            department,
+            section,
+            roles
+        };
+        // Send the formData to the backend (you can use fetch API or other methods)
+        // Example: You can use the fetch API to make an HTTP POST request to your backend
+        fetch("http://localhost:3000/posting", {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data) // Handle the response from the backend
+                document.querySelector('form').reset();
+            })
+            .catch((error) => {
+                console.error("Error:", error)
+            });
+    });
+</script>
 </html>
